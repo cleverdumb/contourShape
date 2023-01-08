@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Contour shape</title>
+	</head>
+	<body>
+		<script>
+            let grid = [
+                [0,0,0,0,0,0,0,0,0,0],
+                [0,0,0,0,0,0,0,0,0,0],
+                [0,0,0,0,0,0,0,0,0,0],
+                [0,0,0,0,1,1,1,0,0,0],
+                [0,0,0,1,0,0,0,1,0,0],
+                [0,0,0,1,0,0,0,1,0,0],
+                [0,0,0,1,0,0,0,1,0,0],
+                [0,0,0,0,1,1,1,0,0,0],
+                [0,0,0,0,0,0,0,0,0,0],
+                [0,0,0,0,0,0,0,0,0,0]
+            ];
+
+            // let grid = [
+            //     [0,0,0,0,0,0,0,0,0,0],
+            //     [0,0,0,0,0,0,0,0,0,0],
+            //     [0,0,0,0,0,0,0,0,0,0],
+            //     [0,0,0,0,0,0,0,0,0,0],
+            //     [0,0,0,1,1,1,1,0,0,0],
+            //     [0,0,0,0,0,0,1,0,0,0],
+            //     [0,0,0,0,0,0,1,0,0,0],
+            //     [0,0,0,0,0,0,0,0,0,0],
+            //     [0,0,0,0,0,0,0,0,0,0],
+            //     [0,0,0,0,0,0,0,0,0,0]
+            // ];
+
+            const depth = 2;
+
+            function loop(grid, cd) {
+                grid.forEach((y,yi)=>{
+                    y.forEach((x,xi)=>{
+                        cd(x, y, xi, yi);
+                    })
+                })
+            }
+
+            let blacks = [];
+
+            loop(grid, (x, y, xi, yi)=>{
+                if (x == 1) {
+                    blacks.push([xi, yi]);
+                }
+            })
+
+            let visited = blacks.slice();
+            let pointers = blacks.slice();
+
+            for (let x=0; x<depth; x++) {
+                let temp = [];
+                pointers.forEach(x=>{
+                    temp.push([x[0]+1, x[1]])
+                    temp.push([x[0]-1, x[1]])
+                    temp.push([x[0], x[1]+1])
+                    temp.push([x[0], x[1]-1])
+                    temp.push([x[0]+1, x[1]+1])
+                    temp.push([x[0]+1, x[1]-1])
+                    temp.push([x[0]-1, x[1]+1])
+                    temp.push([x[0]-1, x[1]-1])
+                })
+                // console.log('test 1');
+                // console.log(temp);
+                temp = temp.filter(x=>visited.every(y=>(y[0]!=x[0])||y[1]!=x[1]));
+                // console.log('test 2');
+                // console.log(temp);
+                temp = temp.filter(x=>(x[0]>=0) && (x[1]>=0) && (x[0]<grid.length) && (x[1]<grid.length));
+                // console.log('test 3');
+                // console.log(temp);
+                let temp2 = [];
+                temp.forEach(x=>{
+                    if (temp2.every(y=>(x[0]!=y[0]) || (x[1]!=y[1]))) {
+                        temp2.push(x);
+                    }
+                })
+                temp2.forEach(x=>{
+                    visited.push(x);
+                })
+                pointers = temp2.slice();
+            }
+
+            pointers.forEach(x=>{
+                grid[x[1]][x[0]] = 2;
+            })
+
+            // grid.forEach((y,yi)=>{
+            //     y.forEach((x,xi)=>{
+            //         if (x == 1) {
+            //             blacks.push([xi, yi]);
+            //         }
+            //     })
+            // })
+
+            // console.log(grid);
+            // console.log('blacks');
+            // console.log(blacks);
+            // console.log('grid');
+            console.log(grid);
+
+        </script>
+	</body>
+</html>
